@@ -106,7 +106,7 @@ def reconstruct(x, y, repdict=None, join=True, remove_=False, axis=0):
 
 
 # %%
-class Reps():
+class Representations():
 
     """This class delivers representations for words to be used in ANNs.
     It is similar to CMUdata, stored elsewhere, but different because of how
@@ -116,7 +116,7 @@ class Reps():
 
 
     def __init__(self, words, outliers=None, cmudict_supplement=None, phonpath=None, oneletter=False, maxorth=None, maxphon=None, minorth=None, minphon=None, maxsyll=None, onehot=True, orthpad=9, phonpad=9, terminals=False, phon_index=0, justify='left', punctuation=False, numerals=False, tolower=True, frequency=None, test_reps=True, verbose=True):
-        """Initialize Reps with a values that specify representations over words.
+        """Initialize Representations with values that specify representations over words.
         Parameters
         ----------
         words : list
