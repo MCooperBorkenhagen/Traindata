@@ -7,97 +7,7 @@ import nltk
 from copy import deepcopy as cp
 import string
 
-from utilities import phontable, phonemedict, key
-
-# %%%
-
-def pad_(wordform, maxlen):
-    padlen = maxlen - len(wordform)
-    return(wordform + ('_'*padlen))
-
-
-def remove(list, pattern = '[0-9]'): 
-    """
-    Remove a string from each element of a list, defaults
-    to removing numeric strings.
-    """
-    list = [re.sub(pattern, '', i) for i in list] 
-    return(list)
-
-# %%
-# utility functions:
-
-# generate binary phonological representation for a wordform (will work for orth or phon)
-def represent(wordform, representations, embed=False):
-    if embed:
-        return([[representations[e]] for e in wordform])
-    elif not embed:
-        return([representations[e] for e in wordform])
-
-
-def n_syllables(x):
-    count = 0
-    for e in x:
-        if any(ch.isdigit() for ch in e):
-            count += 1
-    return(count)
-
-def remove_all(x, element):
-    return(list(filter(lambda e: e != element, x)))
-
-
-
-def reconstruct(x, y, repdict=None, join=True, remove_=False, axis=0):
-
-    """Reconstruct a string representation of a pattern from binary sequence.
-    Parameters
-    ----------
-    x : numpy array
-        An array containing binary representations from which the reconstruction
-        will occur.
-    
-    y : list
-        Each element of the list will be the string-based representation of each
-        element in x. The structure of each element will be inferred from reps. For
-        reps='phon', each element will be a list; for reps='orth', each element will
-        be a string.
-    reps : str
-        Specify the dictionary containing binary representations for each element
-        within examples in x. (Default is None)
-    join :  bool
-        Join the string representatation generated from reconstruction. This is
-        necessary if the elements in r are orthographic wordforms.
-    remove_ : bool
-        Remove "_" or not. This will be useful if values in x contain the
-        spacer character "_". (Default is False)
-    axis : int
-        The axis of x over which iteration should occur. (default is 0)
-    Returns
-    -------
-    bool
-        A True value is provided if reconstructed x matches the representations
-        in y. Else, a False value is returned.
-    """
-
-    def reconstruct_(example):
-        return([key(repdict, e) for e in example.tolist()])
-
-    r = []
-    
-    for ex in range(x.shape[axis]):
-        #if type(x[ex]) == list:
-        #    print(ex)
-        #    print(x[ex])
-        r.append(reconstruct_(x[ex]))
-
-    if remove_:
-        r = [remove_all(e, '_') for e in r]
-    
-    if not join:
-        return(r == y)
-    elif join:
-        for e in r:
-            return([''.join(e) for e in r] == y)
+from utilities import phontable, phonemedict, key, represent, n_syllables, reconstruct
 
 
 
@@ -116,49 +26,65 @@ class Representations():
 
 
     def __init__(self, words, outliers=None, cmudict_supplement=None, phonpath=None, oneletter=False, maxorth=None, maxphon=None, minorth=None, minphon=None, maxsyll=None, onehot=True, orthpad=9, phonpad=9, terminals=False, phon_index=0, justify='left', punctuation=False, numerals=False, tolower=True, frequency=None, test_reps=True, verbose=True):
+       
         """Initialize Representations with values that specify representations over words.
+        
         Parameters
         ----------
         words : list
             A list of ortohgraphic wordforms to be encoded into orthographic
             and phonological representations.
+
         outliers : list or None
             A list of words to be excluded from representations of words, or None
             if no excluding is required. (default None)
+        
         cmudict_supplement : str or None
             A path to a json file to be used to supplement phonological
             transcriptions contained in cmudict. Keys in the dict object
             represented in the json file should match words provided.
+
         phonlabel : str
             Label of phoneme to be specified when producing phontable and phonreps.
             "two-letter" or "IPA" are supported, though "IPA" hasn't been tested and
             may produce idiosyncratic behavior. 
+        
         oneletter : bool
             Whether to exclude words that are one letter long or not. Note the partial
             redundancy with the minorth parameter. (Default is True)
+        
         maxorth : int or None
             The maximum length of the orthographic wordforms to populate the pool
             for representations. This value is calculated inclusively. (Default is None)
+        
         maxphon : int or None
             The maximum length of the phonological wordforms to populate the pool
             for representations. This value is calculated inclusively. (Default is None)
+
         minorth : int or None
             The minimum length of the orthographic wordforms to populate the pool
             for representations. This value is calculated inclusively. (Default is None)
+        
         minphon : int or None
             The minimum length of the phonological wordforms to populate the pool
             for representations. This value is calculated inclusively. (Default is None)
+        
         onehot : bool
             Specify orthographic representations with onehot codings. (Default is True)
+        
         orthpad : int or None
             The value to supply as an orthographic pad. (Default is 9)
+
         phonpad : int or None
             The value to supply as a phonological pad. (Default is 9)
+        
         terminals : bool
             Include terminal markers in phonological representations or not. (default is False)
+        
         phon_index : int or string
             The index to use for specifying which phonological representation
             from cmudict to pass for conversion to binary phonological representation.
+
         justify : str
             How to justify the patterns output. This specification is applied to
             all patterns produced (orthography, phonology, and if eos is
@@ -258,7 +184,9 @@ class Representations():
         self.pool = pool
 
         if phonpath is None:
+            # use a backup if not specified.
             phonpath = 'https://raw.githubusercontent.com/MCooperBorkenhagen/ARPAbet/master/phonreps.csv'
+
         self.phonpath = phonpath
         self.phontable = phontable(phonpath)
         self.phonreps = phonemedict(phonpath, terminals=terminals)
@@ -267,8 +195,10 @@ class Representations():
             orthpath = 'raw/orthreps_onehot.json'
         elif not onehot:
             orthpath = 'raw/orthreps.json'
+
         with open(orthpath, 'r') as f:
             orthreps = json.load(f)
+        
         self.orthreps = orthreps
         self.outliers = outliers
         self.excluded = excluded

@@ -195,9 +195,9 @@ def reconstruct(x, y, reps='phon', axis=0):
         return([''.join(e) for e in r] == y)
 
 
-def phontable():
+def phontable(PATH = 'raw/phonreps.csv'):
 
-    """Parse the phoneme table located in raw/phonreps.csv
+    """Parse the phoneme table located in PATH.
 
     This is an opinionated function that requires a phoneme table
     with a very specific structure, located in raw/phonreps.csv
@@ -206,11 +206,11 @@ def phontable():
     -------
     pandas.DataFrame
         A dataframe is returned where each column represents a phonological
-        feature and rows represent
+        feature and rows represent phones. Default is raw/phonreps.csv
     
     """
 
-    df = pd.read_csv('raw/phonreps.csv')
+    df = pd.read_csv(PATH)
     df = df.set_index('phone')
     feature_cols = [column for column in df if column.startswith('#')]
     df = df[feature_cols]
@@ -315,4 +315,155 @@ def numphones(x, delimiter='-'):
             if i == delimiter:
                 count += 1
         return(count+1)
+
+
+def remove(list, pattern = '[0-9]'): 
+    """
+    Remove a string from each element of a list, defaults
+    to removing numeric strings.
+    """
+    list = [re.sub(pattern, '', i) for i in list] 
+    return(list)
+
+
+
+
+# 
+def represent(wordform, representations, embed=False):
+
+    """Generate binary a phonological representation for a wordform
+
+    Parameters
+    ----------
+    wordform : list or str
+        An orthographic or phonological coding (string, list respectively)
+        for a word.
+
+    representations : dict
+        The orthographic or phonological representations for all letters,
+        phonemes respectively.
+
+    embed : bool
+        Should the return object contain list elements or not (defaults to True)
+
+    Returns
+    -------
+    list
+        A list consisting of the binary representation form of wordform.
+    """
+
+    if embed:
+        return([[representations[e]] for e in wordform])
+    elif not embed:
+        return([representations[e] for e in wordform])
+    
+
+def n_syllables(x):
+
+    """Count the number of syllables in x.
+
+    Parameters
+    ----------
+    x : list
+        A phonological wordform containing elements representing nuclei.
+        Each element in x is a phoneme, and likely contains at least one nucleus.
+
+    Returns
+    -------
+    int
+        The number of nuclei in x.
+    
+    """
+
+    count = 0
+    for e in x:
+        if any(ch.isdigit() for ch in e):
+            count += 1
+    return(count)
+
+
+
+
+def pad(wordform, maxlen, character = '_'):
+    """Pad a string representation of a wordform with a character.
+    
+    The length of the pad is calculated as the difference between 
+    the length of the word (wordform) and maxlen. A right pad is
+    assumed by this method (i.e., left justificaltion of the word)
+
+    Parameters
+    ----------
+    wordform : list or str
+        A wordform to be padded with some pad character.
+
+    maxlen : int
+        The maximum length of any word in the set from which
+        the padding scheme is derived. 
+
+    character : str
+        The character used as the pad. Default is "_".
+
+    Returns
+    -------
+    list or str
+        The wordform is returned with the pad appended to the
+        right side (i.e., left justification).
+
+    """
+    padlen = maxlen - len(wordform)
+    return(wordform + (character*padlen))
+
+
+
+def reconstruct(x, y, repdict=None, join=True, remove_=False, axis=0):
+
+    """Reconstruct a string representation of a pattern from binary sequence.
+    Parameters
+    ----------
+    x : numpy array
+        An array containing binary representations from which the reconstruction
+        will occur.
+    
+    y : list
+        Each element of the list will be the string-based representation of each
+        element in x. The structure of each element will be inferred from reps. For
+        reps='phon', each element will be a list; for reps='orth', each element will
+        be a string.
+    reps : str
+        Specify the dictionary containing binary representations for each element
+        within examples in x. (Default is None)
+    join :  bool
+        Join the string representatation generated from reconstruction. This is
+        necessary if the elements in r are orthographic wordforms.
+    remove_ : bool
+        Remove "_" or not. This will be useful if values in x contain the
+        spacer character "_". (Default is False)
+    axis : int
+        The axis of x over which iteration should occur. (default is 0)
+    Returns
+    -------
+    bool
+        A True value is provided if reconstructed x matches the representations
+        in y. Else, a False value is returned.
+    """
+
+    def reconstruct_(example):
+        return([key(repdict, e) for e in example.tolist()])
+
+    r = []
+    
+    for ex in range(x.shape[axis]):
+        #if type(x[ex]) == list:
+        #    print(ex)
+        #    print(x[ex])
+        r.append(reconstruct_(x[ex]))
+
+    if remove_:
+        r = [remove_all(e, '_') for e in r]
+    
+    if not join:
+        return(r == y)
+    elif join:
+        for e in r:
+            return([''.join(e) for e in r] == y)
 
