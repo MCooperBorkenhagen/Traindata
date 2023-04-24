@@ -1,0 +1,7 @@
+
+
+Orthography-to-phonlogy networks require training data that
+has some special care taken to consider aspects of phonological
+and orthgraphic processing when specifying to the training 
+representations used during learning. This repo provides some
+functionality to that end.
