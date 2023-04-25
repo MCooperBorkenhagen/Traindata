@@ -23,8 +23,7 @@ connectionist implementations, namely from Harm & Seidenberg (1999).
 In essence, the classical distinctive features framework is used,
 originally formulated in Chomsky and Halle (1968). Originally,
 the framework used in this repository codes for binary features,
-but other codings are possible. See Cooper Borkenhagen (2023) for
-more information.
+but other codings are possible.
 
 
 Orthography
@@ -47,6 +46,4 @@ representations contained here allow for this, with a feature
 representing the start of the word (labeled SOS) and a feature
 encoding the end of the word (labeled EOS). The labels "SOS" and
 "EOS" are adopted from the machine learning literature and implementations
-of sequential ANNs, from which the network in Cooper Borkenhagen (2023)
-was based. See more discussion in Cooper Borkenhagen (2023) about
-these segments and various related issues in cognition and perception.
+of sequential ANNs. 
