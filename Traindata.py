@@ -42,7 +42,63 @@ class Representations():
         The string form of the words provided with cleaning applied as specified
         in the arguments at class call.
     
+    phonpath : str
+        Path to the data specifying the binary representations for all the phonemes
+        used to compile training data.
 
+    phontable : pandas.DataFrame
+        Compiled table of phonemes and their binary representations. Rows are
+        phonemes and columns are distinctive features.
+
+    phonreps : dict
+        The binary phoneme representations in dictionary form. Keys are phonemes
+        (identified as strings) and values are the binary featural representations
+        of each phoneme (as a list).
+        
+    orthreps : dict
+        The binary or scalar featural representations of orthographic segments.
+        Keys are letters and values are the featural representations. If onehot
+        is set to True when the class Representations() is called, the value
+        is a scalar indicating which node should be hot.
+    
+    outliers : list
+        Words identified as outliers based on what is provided to the outliers
+        argument when Representations() is called. Their status as outliers
+        is arbitrary and selected by the user.
+    
+    excluded : list
+        Words removed from the training data compiled based on other
+        arguments specified when Representations() is called (e.g., words
+        that have more than maxsyll syllables).
+
+    cmudictSOS : dict
+        A dictionary specifying the phoneme coding for words that contains
+        the word-initial (i.e. "SOS") terminal segment.
+
+    cmudictEOS : dict
+        A dictionary specifying the phoneme coding for words that contains
+        the word-final (i.e. "EOS") terminal segment.
+
+    pool_with_pad : dict
+        The words identified for compiling in traindata as keys with the
+        padded form of the word as the value. Default pad character is "_".
+    
+    self.orthlengths : dict
+        A dictionary which has as keys the string form of each word, whose
+        value is the orthographic length of the word (number of letters
+        without consideration for the pad).
+
+    self.orthforms : dict
+        A dictionary which has as keys the string form of each word, whose
+        value is a binary orthographic representation of that word in list form.
+
+    orthforms_padded : dict
+        A dictionary which has as keys the string form of each word, whose
+        value is a padded binary orthographic representation of that word in list form.
+
+    self.phonforms
+        A dictionary which has as keys the string form of each word, whose
+        value is a binary phonological representation of that word in list form.
 
     """
 
