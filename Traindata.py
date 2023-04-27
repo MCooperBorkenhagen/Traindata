@@ -2,14 +2,11 @@
 
 import numpy as np
 import json
-import re
 import nltk
 from copy import deepcopy as cp
 import string
 
-from utilities import phontable, phonemedict, key, represent, n_syllables, reconstruct
-
-
+from utilities import phontable, phonemedict, represent, n_syllables, reconstruct
 
 
 
@@ -22,7 +19,34 @@ class Representations():
     It is similar to CMUdata, stored elsewhere, but different because of how
     opinionated it is about the structure of its outputs and how to clean its
     inputs (words).
+    ...
+
+    traindata : dict
+        The payload of the class. The traindata dictionary contains keys
+        for the phonological length (plus the terminal segment if terminals=True)
+        for all words provided at class call. Within phonological lengths,
+        the suboridinate dictionary contains values for orthography,
+        phonology, frequency, and the list of words (strings) for that set
+        of words within that phonological length. If terminals=True, then
+        for phonology key-values are provided with the word-initial segment
+        ("SOS" for "start-of-string") and the word-final ("EOS" for "end-of-string)
+        termnal segments. These terminal segments are provided in particular
+        for temporal/ sequence-based ANN implementation where word boundaries
+        need to be represented explicitly.
+
+    cmudict : dict
+        A dictionary which contains the string form of words as keys and
+        the CMUdict encoding (list of strings) as values.
+
+    pool : list
+        The string form of the words provided with cleaning applied as specified
+        in the arguments at class call.
+    
+
+
     """
+
+
 
 
     def __init__(self, words, outliers=None, cmudict_supplement=None, phonpath=None, oneletter=False, maxorth=None, maxphon=None, minorth=None, minphon=None, maxsyll=None, onehot=True, orthpad=9, phonpad=9, terminals=False, phon_index=0, justify='left', punctuation=False, numerals=False, tolower=True, frequency=None, test_reps=True, verbose=True):
@@ -44,11 +68,10 @@ class Representations():
             transcriptions contained in cmudict. Keys in the dict object
             represented in the json file should match words provided.
 
-        phonlabel : str
-            Label of phoneme to be specified when producing phontable and phonreps.
-            "two-letter" or "IPA" are supported, though "IPA" hasn't been tested and
-            may produce idiosyncratic behavior. 
-        
+        phonpath : str
+            Path to table of machine readable representations of phonemes
+            and their string identifiers. Defaults to a repo containing these.
+
         oneletter : bool
             Whether to exclude words that are one letter long or not. Note the partial
             redundancy with the minorth parameter. (Default is True)
@@ -68,6 +91,12 @@ class Representations():
         minphon : int or None
             The minimum length of the phonological wordforms to populate the pool
             for representations. This value is calculated inclusively. (Default is None)
+
+        maxsyll : int
+            The maximum number of syllables allowed for output words. Defaults
+            to None, which let's all words provided to be considered for representation
+            regardles of their syllabic length. Syllabic length is calculated as the
+            total number of nuclei given by the CMUdict phonological coding.
         
         onehot : bool
             Specify orthographic representations with onehot codings. (Default is True)
@@ -91,6 +120,30 @@ class Representations():
             set to True, both input and output phonology). Note that a left justification
             means that the pad is placed on the right side of the representations,
             and vice versa for right justification. (Default is left.)
+
+        punctuation : bool
+            Specifies whether (False) or not (True) punctuation should be removed. 
+            Default is False, which results in punctuation being removed. Note that
+            if punctuation is left (i.e., True value provided), representations for 
+            punctuation need to be specified.
+        
+        numerals : bool
+            Should numerals be present (False) or not (True). Default is False,
+            which results in numerals being removed from input words.
+        
+        tolower : bool
+            Should the words provided be converted to lowercase (True) or not (False),
+            before being represented as orthographic and phonological codes. The default
+            is True, resulting in all words being converted to lowercase.
+        
+        frequency : dict
+            A dictionary of word frequencies where the keys match the words provided
+            and the value of each key is that word's raw frequency. Default is None.
+
+        test_reps : bool
+            Should tests be performed on the representations to make sure they have
+            expected structure. Default is True.
+
         """
 
         pool = list(set(words))
@@ -359,4 +412,4 @@ class Representations():
 
 
 if __name__ == "__main__":
-    Reps()
+    print("Import module and provide words to represent. Default words not provided.")
