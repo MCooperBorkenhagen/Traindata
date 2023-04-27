@@ -13,7 +13,7 @@ from utilities import phontable, phonemedict, represent, n_syllables, reconstruc
 
 
 # %%
-class Representations():
+class Traindata():
 
     """This class delivers representations for words to be used in ANNs.
     It is similar to CMUdata, stored elsewhere, but different because of how
@@ -480,4 +480,5 @@ class Representations():
 
 
 if __name__ == "__main__":
+    
     print("Import module and provide words to represent. Default words not provided.")
