@@ -128,6 +128,18 @@ class Representations():
             Path to table of machine readable representations of phonemes
             and their string identifiers. Defaults to a repo containing these.
 
+        phonreps : dict
+            A dictionary specifying the feature representations for all phonemes
+            used in constructing representations for words. The keys of this dictionary
+            are phonemes, and the value for a given key is the featural representation
+            for that phoneme (provided as a list).
+
+        orthreps : dict
+            A dictionary specifying the feature representations for all letters
+            used in constructing representations for words. The keys of this dictionary
+            are letters, and the value for a given key is the featural representation
+            for that letter (provided as a list).
+
         oneletter : bool
             Whether to exclude words that are one letter long or not. Note the partial
             redundancy with the minorth parameter. (Default is True)
