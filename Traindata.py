@@ -6,7 +6,7 @@ import nltk
 from copy import deepcopy as cp
 import string
 
-from utilities import phontable, phonemedict, represent, n_syllables, reconstruct
+from utilities import phontable, phonemedict, represent, n_syllables, reconstruct, hot_nodes, key
 
 
 
@@ -311,7 +311,10 @@ class Traindata():
         self.phonpath = phonpath
         self.phontable = phontable(phonpath)
         self.phonreps = phonemedict(phonpath, terminals=terminals)
-        
+        self.phonreps_hot_nodes = {phoneme : hot_nodes(rep) for phoneme, rep in self.phonreps.items()}
+
+
+
         if onehot:
             orthpath = 'raw/orthreps_onehot.json'
         elif not onehot:
@@ -321,6 +324,7 @@ class Traindata():
             orthreps = json.load(f)
         
         self.orthreps = orthreps
+        self.orthreps_hot_nodes = {letter : hot_nodes(rep) for letter, rep in self.orthreps.items()}
         self.outliers = outliers
         self.excluded = excluded
 
@@ -478,6 +482,50 @@ class Traindata():
 
         print('Representations initialized. Done.')
 
+    def convert_numeric_prediction(self, prediction, phonology=True, hot_nodes=True):
+
+        """Convert a numeric prediction of orthographic or phonological output to a human-readable format.
+        
+        Parameters
+        ----------
+        prediction : list or array
+            A numeric prediction from a model that has learned from this traindata. This
+            prediction is specified as a list or array, whose elements are lists or arrays.
+            Each element corresponds to a phoneme (if phonology=True) or letter (if False).
+
+        phonology : bool
+            Is the prediction a phonological one (True) or orthographic one (False). This
+            argument specifies which phonreps to reference internal to Traindata. If
+            phonology is set to True, the phonreps of Traindata are referenced, and if False
+            the orthreps of Traindata are referenced (see hot_nodes parameter for more on this).
+
+        hot_nodes : bool
+            Is the prediction provided with specifications of the hot nodes over feature
+            representations (hot_nodes=True) or with the true distributed (binary) feature
+            representations (hot_nodes=False). If hot_nodes is set to True, the representations
+            (attributes) in Traindata are specified with the _hot_nodes suffix
+            (i.e., phonreps_hot_nodes or orthreps_hot_nodes). If hot_nodes is set to False
+            then the phonreps (if phonology=True) or orthreps (if phonology=False) are referenced.
+            Defaults to True for readability of predictions.
+
+        Returns
+        -------
+        list or str
+            A human-readable version of the prediction is provided. If phonological, the return
+            object is a list. If orthographic, the return object is a string.
+
+        """
+
+        if phonology:
+            if hot_nodes:
+                return [key(self.phonreps_hot_nodes, rep) for rep in prediction]
+            elif not hot_nodes:
+                return [key(self.phonreps, rep) for rep in prediction]
+        elif not phonology:
+            if hot_nodes:
+                return ''.join([key(self.orthreps_hot_nodes, rep) for rep in prediction])
+            elif not hot_nodes:
+                return ''.join([key(self.orthreps, rep) for rep in prediction])
 
 if __name__ == "__main__":
     
