@@ -12,6 +12,9 @@ nltk = "3.8.1"
 numpy = "1.26.1"
 pandas = "2.1.2"
 
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.26.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
