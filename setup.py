@@ -30,8 +30,8 @@ setup(
     author='Matt Cooper Borkenhagen',
     author_email='mcooperborkenhagen@fsu.edu',
     license='MIT',
-    packages=[],
+    packages=['Traindata'],
     package_dir={"": "."},
     package_data={},
-    install_requires=['nltk==3.8.1', 'numpy==1.26.1', 'pandas==2.1.2'],
+    install_requires=['nltk==3.8.1', 'numpy==1.26', 'pandas==2.1.2'],
 )
