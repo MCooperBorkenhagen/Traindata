@@ -9,7 +9,7 @@ readme = "README"
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
 nltk = "3.8.1"
-numpy = "1.26.1"
+numpy = "1.26"
 pandas = "2.1.2"
 
 [tool.poetry.group.dev.dependencies]
