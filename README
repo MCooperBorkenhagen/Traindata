@@ -1,9 +1,67 @@
-Orthography-to-phonlogy networks require training data that
+# Traindata
+
+Orthography-to-phonology networks require training data that
 has some special care taken to consider aspects of phonological
-and orthgraphic processing when specifying to the training 
+and orthographic processing when specifying to the training 
 representations used during learning. This repo provides some
 functionality to that end.
 
+## Installation
+
+This project now supports dependency management through Poetry. To get started, first [install Poetry](https://python-poetry.org/docs/#installation) if you haven't already.
+
+Clone the repository to your local machine:
+```bash
+git clone https://github.com/MCooperBorkenhagen/Traindata.git
+```
+
+If you're developing in VS Code, consider creating the virtual environment in the project directory
+as VS Code natively detects it and uses its kernel
+
+```bash
+poetry config virtualenvs.in-project true
+```
+
+Install dependencies and activate the virtual environment. 
+
+```bash
+poetry install
+poetry shell
+```
+
+If you're in VS code, and have installed the *.venv* folder locally, then you do not need to activate the poetry shell.
+
+## Usage
+
+To include this repository as a dependency in another project, add the following to your project's pyproject.toml file:
+
+```toml
+[tool.poetry.dependencies]
+python = ">=3.9,<3.13"
+traindata = { git = "https://github.com/MCooperBorkenhagen/Traindata.git", branch = "main" }
+```
+
+Then, run _*poetry install*_ to install the `traindata` package along with its dependencies.
+
+Alternatively, you can build and install this project using pip
+
+```plaintext
+pip install git+https://github.com/MCooperBorkenhagen/Traindata.git@main#egg=traindata
+```
+
+by adding that URL (along with the git+ prefix) to a requirements.txt file
+
+```bash
+pip install -r requirements.txt
+```
+
+or by cloning the repository and building it from the *setup.py* file
+
+
+```bash
+python setup.py bdist_wheel
+pip install dist/traindata-0.1.0-py3-none-any.whl
+```
 
 Phonology
 ---------
