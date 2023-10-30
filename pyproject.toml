@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "traindata"
+version = "0.1.0"
+description = "Orthography-to-phonlogy tools that preprocess data for training cognitive reading models"
+authors = ["Matt Cooper Borkenhagen <mcooperborkenhagen@fsu.edu>"]
+license = "MIT"
+readme = "README"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.13"
+nltk = "3.8.1"
+numpy = "1.26"
+pandas = "2.1.2"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.26.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

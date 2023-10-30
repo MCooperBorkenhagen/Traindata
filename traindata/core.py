@@ -2,11 +2,12 @@
 
 import numpy as np
 import json
+import os
 import nltk
 from copy import deepcopy as cp
 import string
 
-from utilities import phontable, phonemedict, represent, n_syllables, reconstruct, hot_nodes, key
+from traindata.utilities import phontable, phonemedict, represent, n_syllables, reconstruct, hot_nodes, key
 
 
 
@@ -320,7 +321,13 @@ class Traindata():
         elif not onehot:
             orthpath = 'raw/orthreps.json'
 
-        with open(orthpath, 'r') as f:
+        # Using traindata as a package means we want all paths to be global. The following line 
+        # determines the path to the directory where this file (core.py) is located
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        # Next we join the absolute path to this file with the relative path to the orthreps file.
+        # This ensures that our code will work regardless of where the user has installed the package
+        abs_path = os.path.join(dir_path, orthpath)
+        with open(abs_path, 'r') as f:
             orthreps = json.load(f)
         
         self.orthreps = orthreps
